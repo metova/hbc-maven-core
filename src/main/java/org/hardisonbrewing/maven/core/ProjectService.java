@@ -20,6 +20,9 @@ package org.hardisonbrewing.maven.core;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
 
 import org.apache.maven.artifact.Artifact;
@@ -110,5 +113,16 @@ public final class ProjectService {
         finally {
             fileWriter.close();
         }
+    }
+
+    public static final String getResolvedVersion() {
+
+        String version = getProject().getVersion();
+        if ( version.contains( "-SNAPSHOT" ) ) {
+            DateFormat dateFormat = new SimpleDateFormat( "yyyyMMddHHmmss" );
+            version = version.replace( "-SNAPSHOT", "." + dateFormat.format( new Date() ) );
+        }
+
+        return version;
     }
 }
