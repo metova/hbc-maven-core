@@ -17,7 +17,9 @@
 
 package org.hardisonbrewing.maven.core.cli;
 
+import java.io.File;
 import java.util.List;
+import java.util.Properties;
 
 import org.codehaus.plexus.util.cli.CommandLineException;
 import org.codehaus.plexus.util.cli.CommandLineUtils;
@@ -33,6 +35,18 @@ public final class CommandLineService {
     private CommandLineService() {
 
         // do nothing
+    }
+
+    public static final void appendEnvVar( Commandline commandLine, String key, String value ) {
+
+        try {
+            Properties systemEnvVars = commandLine.getSystemEnvVars();
+            String _value = systemEnvVars.getProperty( key );
+            commandLine.addEnvironment( key, value + File.pathSeparator + _value );
+        }
+        catch (Exception e) {
+            throw new IllegalStateException( e.getMessage() );
+        }
     }
 
     /**

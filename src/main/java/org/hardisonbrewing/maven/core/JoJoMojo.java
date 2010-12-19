@@ -55,15 +55,15 @@ public abstract class JoJoMojo extends AbstractMojo {
 
     protected final void execute( List<String> cmd ) {
 
+        execute( buildCommandline( cmd ) );
+    }
+
+    protected final void execute( Commandline commandLine ) {
+
         int exitValue;
 
         try {
-
-            Commandline commandLine = CommandLineService.build( cmd );
-            commandLine.setWorkingDirectory( TargetDirectoryService.getTargetDirectory() );
-
             getLog().info( commandLine.toString() );
-
             exitValue = CommandLineService.execute( commandLine );
         }
         catch (CommandLineException e) {
@@ -73,6 +73,21 @@ public abstract class JoJoMojo extends AbstractMojo {
         if ( exitValue != 0 ) {
             throw new IllegalStateException( "Command exited with value[" + exitValue + "]" );
         }
+    }
+
+    protected final Commandline buildCommandline( List<String> cmd ) {
+
+        Commandline commandLine;
+
+        try {
+            commandLine = CommandLineService.build( cmd );
+        }
+        catch (CommandLineException e) {
+            throw new IllegalStateException( e.getMessage() );
+        }
+
+        commandLine.setWorkingDirectory( TargetDirectoryService.getTargetDirectory() );
+        return commandLine;
     }
 
     /**
