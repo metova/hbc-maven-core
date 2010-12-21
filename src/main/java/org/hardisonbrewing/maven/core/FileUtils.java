@@ -159,4 +159,69 @@ public final class FileUtils extends org.codehaus.plexus.util.FileUtils {
         stringBuffer.append( FileUtils.getProjectCanonicalPath( filePath ) );
         return stringBuffer.toString();
     }
+
+    public static final long lastModified( File file, boolean recursive ) {
+
+        if ( !file.isDirectory() ) {
+            return file.lastModified();
+        }
+        return lastModifiedRecursive0( file, 0 );
+    }
+
+    private static final long lastModifiedRecursive0( File file, long lastModified ) {
+
+        if ( !file.isDirectory() ) {
+            return Math.max( lastModified, file.lastModified() );
+        }
+
+        for (File _file : file.listFiles()) {
+            lastModified = lastModifiedRecursive0( _file, lastModified );
+        }
+
+        return lastModified;
+    }
+
+    public static final String trimSeperators( String filePath ) {
+
+        boolean startsWith = filePath.startsWith( File.separator );
+        boolean endsWith = filePath.endsWith( File.separator );
+
+        if ( !startsWith && !endsWith ) {
+            return filePath;
+        }
+
+        int beginIndex = 0;
+        if ( startsWith ) {
+            beginIndex++;
+        }
+
+        int endIndex = filePath.length();
+        if ( endsWith ) {
+            endIndex--;
+        }
+
+        if ( beginIndex >= endIndex ) {
+            return null;
+        }
+        return filePath.substring( beginIndex, endIndex );
+    }
+
+    public static final String trimEndSeperator( String filePath ) {
+
+        if ( !filePath.endsWith( File.separator ) ) {
+            return filePath;
+        }
+
+        int endIndex = filePath.length() - 1;
+        if ( endIndex == 0 ) {
+            return null;
+        }
+        return filePath.substring( 0, endIndex );
+    }
+
+    public static final String normalize( String filePath ) {
+
+        filePath = filePath.replace( '/', File.separatorChar );
+        return filePath.replace( '\\', File.separatorChar );
+    }
 }

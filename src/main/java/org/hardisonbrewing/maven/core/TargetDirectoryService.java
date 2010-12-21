@@ -47,7 +47,7 @@ public final class TargetDirectoryService {
      */
     public static final File getTargetDirectory() {
 
-        return new File( getTargetDirectoryPath() );
+        return ProjectService.getOutputDirectory();
     }
 
     /**
@@ -56,11 +56,7 @@ public final class TargetDirectoryService {
      */
     public static final String getTargetDirectoryPath() {
 
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( ProjectService.getBaseDir() );
-        stringBuffer.append( File.separator );
-        stringBuffer.append( TARGET_DIRECTORY_NAME );
-        return stringBuffer.toString();
+        return ProjectService.getOutputDirectoryPath();
     }
 
     public static final String resolveTargetFilePath( String filePath ) {
@@ -81,5 +77,12 @@ public final class TargetDirectoryService {
         stringBuffer.append( File.separator );
         stringBuffer.append( project.getBuild().getFinalName() );
         return stringBuffer.toString();
+    }
+
+    public static final String getSourceDirectoryPath() {
+
+        String sourceDirectory = ProjectService.getProject().getBuild().getSourceDirectory();
+        String baseDirPath = ProjectService.getBaseDirPath();
+        return sourceDirectory.replace( baseDirPath, getTargetDirectoryPath() );
     }
 }

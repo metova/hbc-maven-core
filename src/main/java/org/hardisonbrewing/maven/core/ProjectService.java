@@ -59,6 +59,24 @@ public final class ProjectService {
      * 
      * @return
      */
+    public static final String getOutputDirectoryPath() {
+
+        return getProject().getBuild().getOutputDirectory();
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public static final File getOutputDirectory() {
+
+        return new File( getOutputDirectoryPath() );
+    }
+
+    /**
+     * 
+     * @return
+     */
     public static final File getBaseDir() {
 
         return getProject().getBasedir();
