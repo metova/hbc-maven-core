@@ -79,10 +79,19 @@ public final class TargetDirectoryService {
         return stringBuffer.toString();
     }
 
-    public static final String getSourceDirectoryPath() {
+    public static final String[] getSourceFilePaths() {
 
-        String sourceDirectory = ProjectService.getProject().getBuild().getSourceDirectory();
+        return FileUtils.listFilePathsRecursive( getTargetDirectory() );
+    }
+
+    public static final String[] getResourceFilePaths() {
+
         String baseDirPath = ProjectService.getBaseDirPath();
-        return sourceDirectory.replace( baseDirPath, getTargetDirectoryPath() );
+        String targetDirectoryPath = getTargetDirectoryPath();
+        String[] resourceFilePaths = FileUtils.listFilePathsRecursive( getTargetDirectory() );
+        for (int i = 0; i < resourceFilePaths.length; i++) {
+            resourceFilePaths[i] = resourceFilePaths[i].replace( baseDirPath, targetDirectoryPath );
+        }
+        return resourceFilePaths;
     }
 }

@@ -19,6 +19,7 @@ package org.hardisonbrewing.maven.core;
 
 import java.io.File;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
@@ -223,5 +224,62 @@ public final class FileUtils extends org.codehaus.plexus.util.FileUtils {
 
         filePath = filePath.replace( '/', File.separatorChar );
         return filePath.replace( '\\', File.separatorChar );
+    }
+
+    public static final File[] listFilesRecursive( File file ) {
+
+        List<File> files = new LinkedList<File>();
+        listFilesRecursive( file, files );
+        return files.toArray( new File[files.size()] );
+    }
+
+    private static final void listFilesRecursive( File file, List<File> files ) {
+
+        if ( !file.isDirectory() ) {
+            files.add( file );
+            return;
+        }
+        for (File _file : file.listFiles()) {
+            listFilesRecursive( _file, files );
+        }
+    }
+
+    public static final String[] listFilePathsRecursive( File file ) {
+
+        List<String> files = new LinkedList<String>();
+        listFilePathsRecursive( file, files );
+        return files.toArray( new String[files.size()] );
+    }
+
+    private static final void listFilePathsRecursive( File file, List<String> files ) {
+
+        if ( !file.exists() ) {
+            return;
+        }
+        if ( !file.isDirectory() ) {
+            String filePath = file.getPath();
+            files.add( filePath );
+            return;
+        }
+        for (File _file : file.listFiles()) {
+            listFilePathsRecursive( _file, files );
+        }
+    }
+
+    public static final String replaceExtension( String filePath, String extension ) {
+
+        return filePath.substring( 0, filePath.lastIndexOf( '.' ) ) + "." + extension;
+    }
+
+    public static final String getCanonicalPath( String filePath, String prefix ) {
+
+        if ( prefix == null || filePath.equals( prefix ) || !filePath.startsWith( prefix ) ) {
+            return filePath;
+        }
+        int startIndex = prefix.length();
+        if ( filePath.charAt( startIndex ) == File.separatorChar ) {
+            startIndex++;
+        }
+        return filePath.substring( startIndex );
     }
 }

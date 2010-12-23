@@ -23,9 +23,12 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.model.Resource;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
@@ -142,5 +145,53 @@ public final class ProjectService {
         }
 
         return version;
+    }
+
+    public static final File getSourceDirectory() {
+
+        return new File( getSourceDirectoryAbsolutePath() );
+    }
+
+    public static final String getSourceDirectoryPath() {
+
+        String sourceDirectoryPath = getSourceDirectoryAbsolutePath();
+        return FileUtils.getCanonicalPath( sourceDirectoryPath, getBaseDirPath() );
+    }
+
+    public static final String getSourceDirectoryAbsolutePath() {
+
+        return getProject().getBuild().getSourceDirectory();
+    }
+
+    public static final String[] getSourceFilePaths() {
+
+        String filePathPrefix = getBaseDirPath();
+        String[] filePaths = FileUtils.listFilePathsRecursive( getSourceDirectory() );
+        for (int i = 0; i < filePaths.length; i++) {
+            filePaths[i] = FileUtils.getCanonicalPath( filePaths[i], filePathPrefix );
+        }
+        return filePaths;
+    }
+
+    public static final String[] getResourceFilePaths() {
+
+        String filePathPrefix = getBaseDirPath();
+
+        List<String> resourceFilePaths = new LinkedList<String>();
+        for (Resource resource : (List<Resource>) getProject().getResources()) {
+
+            StringBuffer resourceDirectoryPath = new StringBuffer();
+            resourceDirectoryPath.append( filePathPrefix );
+            resourceDirectoryPath.append( File.separator );
+            resourceDirectoryPath.append( FileUtils.getCanonicalPath( resource.getDirectory(), filePathPrefix ) );
+            File resourceDirectory = new File( resourceDirectoryPath.toString() );
+
+            String[] filePaths = FileUtils.listFilePathsRecursive( resourceDirectory );
+            for (String filePath : filePaths) {
+                resourceFilePaths.add( FileUtils.getCanonicalPath( filePath, filePathPrefix ) );
+            }
+        }
+
+        return resourceFilePaths.toArray( new String[resourceFilePaths.size()] );
     }
 }
