@@ -81,17 +81,12 @@ public final class TargetDirectoryService {
 
     public static final String[] getSourceFilePaths() {
 
-        return FileUtils.listFilePathsRecursive( getTargetDirectory() );
-    }
-
-    public static final String[] getResourceFilePaths() {
-
-        String baseDirPath = ProjectService.getBaseDirPath();
+        String sourceDirectoryPath = ProjectService.getSourceDirectoryPath();
         String targetDirectoryPath = getTargetDirectoryPath();
-        String[] resourceFilePaths = FileUtils.listFilePathsRecursive( getTargetDirectory() );
-        for (int i = 0; i < resourceFilePaths.length; i++) {
-            resourceFilePaths[i] = resourceFilePaths[i].replace( baseDirPath, targetDirectoryPath );
+        String[] filePaths = ProjectService.getSourceFilePaths();
+        for (int i = 0; i < filePaths.length; i++) {
+            filePaths[i] = filePaths[i].replace( sourceDirectoryPath, targetDirectoryPath );
         }
-        return resourceFilePaths;
+        return filePaths;
     }
 }

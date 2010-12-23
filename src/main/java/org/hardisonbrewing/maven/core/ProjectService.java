@@ -149,49 +149,29 @@ public final class ProjectService {
 
     public static final File getSourceDirectory() {
 
-        return new File( getSourceDirectoryAbsolutePath() );
+        return new File( getSourceDirectoryPath() );
     }
 
     public static final String getSourceDirectoryPath() {
-
-        String sourceDirectoryPath = getSourceDirectoryAbsolutePath();
-        return FileUtils.getCanonicalPath( sourceDirectoryPath, getBaseDirPath() );
-    }
-
-    public static final String getSourceDirectoryAbsolutePath() {
 
         return getProject().getBuild().getSourceDirectory();
     }
 
     public static final String[] getSourceFilePaths() {
 
-        String filePathPrefix = getBaseDirPath();
-        String[] filePaths = FileUtils.listFilePathsRecursive( getSourceDirectory() );
-        for (int i = 0; i < filePaths.length; i++) {
-            filePaths[i] = FileUtils.getCanonicalPath( filePaths[i], filePathPrefix );
-        }
-        return filePaths;
+        return FileUtils.listFilePathsRecursive( getSourceDirectory() );
     }
 
     public static final String[] getResourceFilePaths() {
 
-        String filePathPrefix = getBaseDirPath();
-
         List<String> resourceFilePaths = new LinkedList<String>();
         for (Resource resource : (List<Resource>) getProject().getResources()) {
-
-            StringBuffer resourceDirectoryPath = new StringBuffer();
-            resourceDirectoryPath.append( filePathPrefix );
-            resourceDirectoryPath.append( File.separator );
-            resourceDirectoryPath.append( FileUtils.getCanonicalPath( resource.getDirectory(), filePathPrefix ) );
-            File resourceDirectory = new File( resourceDirectoryPath.toString() );
-
+            File resourceDirectory = new File( resource.getDirectory() );
             String[] filePaths = FileUtils.listFilePathsRecursive( resourceDirectory );
             for (String filePath : filePaths) {
-                resourceFilePaths.add( FileUtils.getCanonicalPath( filePath, filePathPrefix ) );
+                resourceFilePaths.add( filePath );
             }
         }
-
         return resourceFilePaths.toArray( new String[resourceFilePaths.size()] );
     }
 }
