@@ -18,7 +18,10 @@
 package org.hardisonbrewing.maven.core;
 
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 
+import org.apache.maven.model.Resource;
 import org.apache.maven.project.MavenProject;
 
 public final class TargetDirectoryService {
@@ -88,5 +91,20 @@ public final class TargetDirectoryService {
             filePaths[i] = filePaths[i].replace( sourceDirectoryPath, targetDirectoryPath );
         }
         return filePaths;
+    }
+
+    public static final String[] getResourceFilePaths() {
+
+        String targetDirectoryPath = getTargetDirectoryPath();
+        List<String> resourceFilePaths = new LinkedList<String>();
+        for (Resource resource : (List<Resource>) ProjectService.getProject().getResources()) {
+            File resourceDirectory = new File( resource.getDirectory() );
+            String[] filePaths = FileUtils.listFilePathsRecursive( resourceDirectory );
+            for (String filePath : filePaths) {
+                filePath = filePath.replace( resource.getDirectory(), targetDirectoryPath );
+                resourceFilePaths.add( filePath );
+            }
+        }
+        return resourceFilePaths.toArray( new String[resourceFilePaths.size()] );
     }
 }
