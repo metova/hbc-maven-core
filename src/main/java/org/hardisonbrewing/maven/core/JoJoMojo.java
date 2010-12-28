@@ -23,6 +23,7 @@ import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.installer.ArtifactInstaller;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
@@ -146,4 +147,10 @@ public abstract class JoJoMojo extends AbstractMojo {
      * @return
      */
     public abstract ArtifactInstaller getArtifactInstaller();
+
+    /**
+     * 
+     * @return
+     */
+    public abstract MavenSession getMavenSession();
 }

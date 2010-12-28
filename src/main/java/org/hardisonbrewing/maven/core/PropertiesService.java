@@ -28,6 +28,10 @@ public final class PropertiesService {
 
     public static final String getProperty( String key ) {
 
+        String value = JoJoMojo.getMojo().getMavenSession().getExecutionProperties().getProperty( key );
+        if ( value != null ) {
+            return value;
+        }
         return ProjectService.getProject().getProperties().getProperty( key );
     }
 
