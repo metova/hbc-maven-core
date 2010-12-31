@@ -18,12 +18,59 @@
 package org.hardisonbrewing.maven.core;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Properties;
 
-public final class PropertiesService {
+public class PropertiesService {
 
-    private PropertiesService() {
+    protected PropertiesService() {
 
         // do nothing
+    }
+
+    public static final void storeProperties( Properties properties, String filePath ) {
+
+        try {
+            properties.store( new FileOutputStream( filePath ), null );
+        }
+        catch (IOException e) {
+            JoJoMojo.getMojo().getLog().error( "Unable to write properties file: " + filePath );
+            throw new IllegalStateException( e.getMessage() );
+        }
+    }
+
+    public static final Properties loadProperties( String filePath ) {
+
+        File file = new File( filePath );
+        if ( !file.exists() ) {
+            return null;
+        }
+
+        Properties properties = new Properties();
+
+        try {
+            properties.load( new FileInputStream( file ) );
+        }
+        catch (IOException e) {
+            JoJoMojo.getMojo().getLog().error( "Unable to read properties file: " + filePath );
+            throw new IllegalStateException( e.getMessage() );
+        }
+
+        return properties;
+    }
+
+    public static final Properties getProperties() {
+
+        Properties properties = new Properties();
+
+        // do these first so execution properties can overwrit
+        properties.putAll( ProjectService.getProject().getProperties() );
+
+        // these properties come from command line
+        properties.putAll( JoJoMojo.getMojo().getMavenSession().getExecutionProperties() );
+        return properties;
     }
 
     public static final String getProperty( String key ) {
