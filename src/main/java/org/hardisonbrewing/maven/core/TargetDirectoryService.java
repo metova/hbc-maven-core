@@ -24,14 +24,14 @@ import java.util.List;
 import org.apache.maven.model.Resource;
 import org.apache.maven.project.MavenProject;
 
-public final class TargetDirectoryService {
+public class TargetDirectoryService {
 
     /**
      * The name of the target directory.
      */
     public static final String TARGET_DIRECTORY_NAME = "target";
 
-    private TargetDirectoryService() {
+    protected TargetDirectoryService() {
 
         // do nothing
     }

@@ -54,12 +54,12 @@ public abstract class JoJoMojo extends AbstractMojo {
         return joJoMojo;
     }
 
-    protected final void execute( List<String> cmd ) {
+    protected final int execute( List<String> cmd ) {
 
-        execute( buildCommandline( cmd ) );
+        return execute( buildCommandline( cmd ) );
     }
 
-    protected final void execute( Commandline commandLine ) {
+    protected final int execute( Commandline commandLine ) {
 
         int exitValue;
 
@@ -74,6 +74,7 @@ public abstract class JoJoMojo extends AbstractMojo {
         if ( exitValue != 0 ) {
             throw new IllegalStateException( "Command exited with value[" + exitValue + "]" );
         }
+        return exitValue;
     }
 
     protected final Commandline buildCommandline( List<String> cmd ) {
