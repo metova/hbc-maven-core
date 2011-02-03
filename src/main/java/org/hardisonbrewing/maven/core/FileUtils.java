@@ -81,16 +81,27 @@ public final class FileUtils extends org.codehaus.plexus.util.FileUtils {
      */
     public static final String getProjectCanonicalPath( String filePath ) {
 
-        String targetDirectoryPath = TargetDirectoryService.getTargetDirectoryPath();
-
-        if ( filePath.startsWith( targetDirectoryPath ) ) {
-            return filePath.substring( targetDirectoryPath.length() );
-        }
-
         String baseDirPath = ProjectService.getBaseDirPath();
 
         if ( filePath.startsWith( baseDirPath ) ) {
             return filePath.substring( baseDirPath.length() );
+        }
+
+        return filePath;
+    }
+
+    /**
+     * Convert the specified file path to a canonical path that can be used with
+     * {@link TargetDirectoryService.getTargetDirectoryPath()} as the new base path.
+     * @param filePath
+     * @return
+     */
+    public static final String getTargetCanonicalPath( String filePath ) {
+
+        String targetDirectoryPath = TargetDirectoryService.getTargetDirectoryPath();
+
+        if ( filePath.startsWith( targetDirectoryPath ) ) {
+            return filePath.substring( targetDirectoryPath.length() );
         }
 
         return filePath;

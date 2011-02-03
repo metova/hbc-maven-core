@@ -64,7 +64,7 @@ public class TargetDirectoryService {
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( getTargetDirectoryPath() );
         stringBuffer.append( File.separator );
-        stringBuffer.append( FileUtils.getProjectCanonicalPath( filePath ) );
+        stringBuffer.append( FileUtils.getTargetCanonicalPath( filePath ) );
         return stringBuffer.toString();
     }
 

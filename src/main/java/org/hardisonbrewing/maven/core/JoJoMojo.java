@@ -77,7 +77,7 @@ public abstract class JoJoMojo extends AbstractMojo {
         return exitValue;
     }
 
-    protected final Commandline buildCommandline( List<String> cmd ) {
+    protected Commandline buildCommandline( List<String> cmd ) {
 
         Commandline commandLine;
 
