@@ -60,6 +60,12 @@
 			<artifactId>plexus-component-api</artifactId>
 			<version>1.0-alpha-33</version>
 		</dependency>
+		<!-- JAXB -->
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.1</version>
+		</dependency>
 		<!-- misc -->
 		<dependency>
 			<groupId>org.apache.maven.plugins</groupId>

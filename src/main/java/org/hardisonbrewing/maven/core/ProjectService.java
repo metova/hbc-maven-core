@@ -44,6 +44,21 @@ public final class ProjectService {
      * 
      * @return
      */
+    public static final String generateSnapshotVersion() {
+
+        String version = getProject().getVersion();
+        DateFormat dateFormat = new SimpleDateFormat( "yyyyMMddHHmmssZ" );
+        String snapshot = dateFormat.format( new Date() );
+        if ( version.contains( "SNAPSHOT" ) ) {
+            return version.replace( "SNAPSHOT", snapshot );
+        }
+        return version + "-" + snapshot;
+    }
+
+    /**
+     * 
+     * @return
+     */
     public static final String getProperty( String key ) {
 
         return getProperties().getProperty( key );
