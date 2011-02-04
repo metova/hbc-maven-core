@@ -3,8 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.hardisonbrewing</groupId>
 	<artifactId>hbc-maven-core</artifactId>
-	<version>1.0-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<version>1.1-SNAPSHOT</version>
 	<name>${project.artifactId}</name>
 	<build>
 		<plugins>
@@ -83,5 +82,9 @@
 			<id>hardisonbrewing-snapshots</id>
 			<url>http://repo.hardisonbrewing.org/nexus/content/repositories/snapshots</url>
 		</repository>
+<!--		<repository>-->
+<!--			<id>hardisonbrewing-releases</id>-->
+<!--			<url>http://repo.hardisonbrewing.org/nexus/content/repositories/releases</url>-->
+<!--		</repository>-->
 	</distributionManagement>
 </project>
