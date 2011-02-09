@@ -18,6 +18,7 @@
 package org.hardisonbrewing.maven.core;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,6 +33,31 @@ public final class FileUtils extends org.codehaus.plexus.util.FileUtils {
     private FileUtils() {
 
         // do nothing
+    }
+
+    public static final String getExtension( String filename ) {
+
+        return filename.substring( 0, filename.lastIndexOf( "." ) );
+    }
+
+    public static final void copyFile( File source, File destination ) throws IOException {
+
+        org.codehaus.plexus.util.FileUtils.copyFile( source, destination );
+
+        destination.setLastModified( destination.lastModified() );
+    }
+
+    public static final void copyFileToDirectory( File source, File destinationDirectory ) throws IOException {
+
+        org.codehaus.plexus.util.FileUtils.copyFileToDirectory( source, destinationDirectory );
+
+        StringBuffer destFilePath = new StringBuffer();
+        destFilePath.append( destinationDirectory );
+        destFilePath.append( File.separator );
+        destFilePath.append( source.getName() );
+        File destFile = new File( destFilePath.toString() );
+
+        destFile.setLastModified( source.lastModified() );
     }
 
     /**
