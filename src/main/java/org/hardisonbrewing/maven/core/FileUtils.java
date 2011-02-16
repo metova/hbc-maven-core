@@ -35,11 +35,6 @@ public final class FileUtils extends org.codehaus.plexus.util.FileUtils {
         // do nothing
     }
 
-    public static final String getExtension( String filename ) {
-
-        return filename.substring( 0, filename.lastIndexOf( "." ) );
-    }
-
     public static final void copyFile( File source, File destination ) throws IOException {
 
         org.codehaus.plexus.util.FileUtils.copyFile( source, destination );
