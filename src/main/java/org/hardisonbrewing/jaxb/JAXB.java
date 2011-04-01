@@ -34,9 +34,14 @@ import javax.xml.bind.Unmarshaller;
 import org.codehaus.plexus.util.IOUtil;
 import org.hardisonbrewing.maven.core.JoJoMojo;
 
-public class JAXB {
+public final class JAXB {
 
     private static Hashtable<Class<?>, JAXBContext> jaxbContexts = new Hashtable<Class<?>, JAXBContext>();
+
+    private JAXB() {
+
+        // do nothing
+    }
 
     public static <T> T unmarshal( String xml, Class<T> clazz ) throws JAXBException {
 

@@ -37,6 +37,11 @@ public final class FileUtils extends org.codehaus.plexus.util.FileUtils {
 
     public static final void copyFile( File source, File destination ) throws IOException {
 
+        if ( !source.exists() ) {
+            throw new IllegalStateException( source.getAbsolutePath() + " does not exist." );
+        }
+
+        JoJoMojo.getMojo().getLog().info( "Copying " + source + " to " + destination );
         org.codehaus.plexus.util.FileUtils.copyFile( source, destination );
 
         destination.setLastModified( destination.lastModified() );
@@ -44,6 +49,11 @@ public final class FileUtils extends org.codehaus.plexus.util.FileUtils {
 
     public static final void copyFileToDirectory( File source, File destinationDirectory ) throws IOException {
 
+        if ( !source.exists() ) {
+            throw new IllegalStateException( source.getAbsolutePath() + " does not exist." );
+        }
+
+        JoJoMojo.getMojo().getLog().info( "Copying " + source + " to " + destinationDirectory );
         org.codehaus.plexus.util.FileUtils.copyFileToDirectory( source, destinationDirectory );
 
         StringBuffer destFilePath = new StringBuffer();
