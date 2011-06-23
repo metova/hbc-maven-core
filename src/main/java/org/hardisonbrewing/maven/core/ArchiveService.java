@@ -29,9 +29,9 @@ import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
 /**
  * Utility methods for handling archiving and unarchiving.
  */
-public final class ArchiveService {
+public class ArchiveService {
 
-    private ArchiveService() {
+    protected ArchiveService() {
 
         // do nothing
     }

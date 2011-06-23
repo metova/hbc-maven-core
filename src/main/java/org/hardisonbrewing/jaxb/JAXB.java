@@ -34,11 +34,11 @@ import javax.xml.bind.Unmarshaller;
 import org.codehaus.plexus.util.IOUtil;
 import org.hardisonbrewing.maven.core.JoJoMojo;
 
-public final class JAXB {
+public class JAXB {
 
     private static Hashtable<Class<?>, JAXBContext> jaxbContexts = new Hashtable<Class<?>, JAXBContext>();
 
-    private JAXB() {
+    protected JAXB() {
 
         // do nothing
     }

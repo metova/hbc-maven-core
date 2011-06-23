@@ -22,9 +22,9 @@ import java.util.List;
 import org.apache.maven.model.Plugin;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
-public final class PluginService {
+public class PluginService {
 
-    private PluginService() {
+    protected PluginService() {
 
         // do nothing
     }

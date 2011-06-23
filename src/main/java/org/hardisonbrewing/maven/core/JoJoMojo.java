@@ -40,7 +40,7 @@ public abstract class JoJoMojo extends AbstractMojo {
      */
     private static JoJoMojo joJoMojo;
 
-    JoJoMojo() {
+    protected JoJoMojo() {
 
         joJoMojo = this;
     }

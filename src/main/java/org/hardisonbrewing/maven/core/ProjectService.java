@@ -33,9 +33,9 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
 
-public final class ProjectService {
+public class ProjectService {
 
-    private ProjectService() {
+    protected ProjectService() {
 
         // do nothing
     }
@@ -172,7 +172,7 @@ public final class ProjectService {
         return getProject().getBuild().getSourceDirectory();
     }
 
-    public static final String[] getSourceFilePaths() {
+    public static String[] getSourceFilePaths() {
 
         return FileUtils.listFilePathsRecursive( getSourceDirectory() );
     }

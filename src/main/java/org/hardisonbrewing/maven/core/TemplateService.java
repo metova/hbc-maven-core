@@ -33,9 +33,9 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.codehaus.plexus.util.IOUtil;
 
-public final class TemplateService {
+public class TemplateService {
 
-    private TemplateService() {
+    protected TemplateService() {
 
         // do nothing
     }

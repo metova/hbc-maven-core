@@ -30,9 +30,9 @@ import org.hardisonbrewing.maven.core.ProjectService;
 /**
  * Utility methods for handling {@link CommandLine} execution.
  */
-public final class CommandLineService {
+public class CommandLineService {
 
-    private CommandLineService() {
+    protected CommandLineService() {
 
         // do nothing
     }

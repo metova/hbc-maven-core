@@ -25,12 +25,12 @@ import java.util.List;
 
 import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
 
-public final class FileUtils extends org.codehaus.plexus.util.FileUtils {
+public class FileUtils extends org.codehaus.plexus.util.FileUtils {
 
     public static final String CURRENT_DIRECTORY_MARKER = "." + File.separator;
     public static final String PARENT_DIRECTORY_MARKER = ".." + File.separator;
 
-    private FileUtils() {
+    protected FileUtils() {
 
         // do nothing
     }

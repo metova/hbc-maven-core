@@ -20,7 +20,12 @@ package org.hardisonbrewing.maven.core;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-public final class StringEscapeUtils extends org.apache.commons.lang.StringEscapeUtils {
+public class StringEscapeUtils extends org.apache.commons.lang.StringEscapeUtils {
+
+    protected StringEscapeUtils() {
+
+        // do nothing
+    }
 
     public static final String escapeURI( String text ) {
 

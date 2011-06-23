@@ -40,9 +40,9 @@ import org.apache.maven.project.artifact.ProjectArtifactMetadata;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.util.FileUtils;
 
-public final class DependencyService {
+public class DependencyService {
 
-    private DependencyService() {
+    protected DependencyService() {
 
         // do nothing
     }

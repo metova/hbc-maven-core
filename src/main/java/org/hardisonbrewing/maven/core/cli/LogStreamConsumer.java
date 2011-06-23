@@ -24,7 +24,7 @@ import org.hardisonbrewing.maven.core.JoJoMojo;
 /**
  * A {@link StreamConsumer} designed to output lines to a {@link Log} instance.
  */
-public final class LogStreamConsumer implements StreamConsumer {
+public class LogStreamConsumer implements StreamConsumer {
 
     public static final int LEVEL_DEBUG = 0;
     public static final int LEVEL_INFO = 1;
