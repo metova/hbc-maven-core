@@ -19,16 +19,30 @@ package org.hardisonbrewing.maven.core;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
+import org.codehaus.plexus.util.DirectoryScanner;
 
 public class FileUtils extends org.codehaus.plexus.util.FileUtils {
 
     public static final String CURRENT_DIRECTORY_MARKER = "." + File.separator;
     public static final String PARENT_DIRECTORY_MARKER = ".." + File.separator;
+
+    public static final String[] IGNORE_FILES;
+
+    static {
+
+        List<String> ignoreFiles = new ArrayList<String>();
+        ignoreFiles.add( ".svn" );
+        ignoreFiles.add( ".DS_Store" );
+        IGNORE_FILES = new String[ignoreFiles.size()];
+        ignoreFiles.toArray( IGNORE_FILES );
+    }
 
     protected FileUtils() {
 
@@ -268,22 +282,69 @@ public class FileUtils extends org.codehaus.plexus.util.FileUtils {
         return filePath.replace( '\\', File.separatorChar );
     }
 
-    public static final File[] listFilesRecursive( File file ) {
+    private static File[] convertFilesPaths( String[] filePaths ) {
 
-        List<File> files = new LinkedList<File>();
-        listFilesRecursive( file, files );
-        return files.toArray( new File[files.size()] );
+        File[] files = new File[filePaths.length];
+        for (int i = 0; i < filePaths.length; i++) {
+            files[i] = new File( filePaths[i] );
+        }
+        return files;
     }
 
-    private static final void listFilesRecursive( File file, List<File> files ) {
+    public static File[] listFilesRecursive( File file, String[] includes, String[] excludes ) {
 
-        if ( !file.isDirectory() ) {
-            files.add( file );
-            return;
+        return convertFilesPaths( listFilePathsRecursive( file, includes, excludes ) );
+    }
+
+    public static final File[] listFilesRecursive( File file ) {
+
+        return convertFilesPaths( listFilePathsRecursive( file ) );
+    }
+
+    public static String[] listFilePathsRecursive( File file, Collection<String> includes, Collection<String> excludes ) {
+
+        String[] _includes = new String[includes.size()];
+        includes.toArray( _includes );
+
+        String[] _excludes = new String[excludes.size()];
+        excludes.toArray( _excludes );
+
+        return listFilePathsRecursive( file, _includes, _excludes );
+    }
+
+    public static String[] listFilePathsRecursive( File file, String[] includes, String[] excludes ) {
+
+        List<String> _excludes = new ArrayList<String>();
+        for (String ignoreFile : IGNORE_FILES) {
+            _excludes.add( "**/" + ignoreFile );
         }
-        for (File _file : file.listFiles()) {
-            listFilesRecursive( _file, files );
+        if ( excludes != null ) {
+            for (String exclude : excludes) {
+                _excludes.add( exclude );
+            }
         }
+
+        excludes = new String[_excludes.size()];
+        _excludes.toArray( excludes );
+
+        DirectoryScanner scanner = new DirectoryScanner();
+        scanner.setIncludes( includes );
+        scanner.setExcludes( excludes );
+        scanner.setBasedir( file );
+        scanner.setCaseSensitive( false );
+        scanner.setFollowSymlinks( true );
+        scanner.scan();
+
+        String[] filePaths = scanner.getIncludedFiles();
+        for (int i = 0; i < filePaths.length; i++) {
+            StringBuffer stringBuffer = new StringBuffer();
+            stringBuffer.append( file );
+            stringBuffer.append( File.separator );
+            stringBuffer.append( filePaths[i] );
+            filePaths[i] = stringBuffer.toString();
+        }
+
+        return filePaths;
     }
 
     public static final String[] listFilePathsRecursive( File file ) {
@@ -295,11 +356,16 @@ public class FileUtils extends org.codehaus.plexus.util.FileUtils {
 
     private static final void listFilePathsRecursive( File file, List<String> files ) {
 
+        String filePath = file.getPath();
+        for (String ignoreFile : IGNORE_FILES) {
+            if ( ignoreFile.equalsIgnoreCase( filePath ) ) {
+                return;
+            }
+        }
         if ( !file.exists() ) {
             return;
         }
         if ( !file.isDirectory() ) {
-            String filePath = file.getPath();
             files.add( filePath );
             return;
         }

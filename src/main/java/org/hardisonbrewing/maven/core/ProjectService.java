@@ -174,7 +174,12 @@ public class ProjectService {
 
     public static String[] getSourceFilePaths() {
 
-        return FileUtils.listFilePathsRecursive( getSourceDirectory() );
+        return getSourceFilePaths( null, null );
+    }
+
+    public static String[] getSourceFilePaths( String[] includes, String[] excludes ) {
+
+        return FileUtils.listFilePathsRecursive( getSourceDirectory(), includes, excludes );
     }
 
     public static final String[] getResourceFilePaths() {
