@@ -31,7 +31,9 @@ import org.apache.maven.project.MavenProjectBuilder;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.util.cli.CommandLineException;
 import org.codehaus.plexus.util.cli.Commandline;
+import org.codehaus.plexus.util.cli.StreamConsumer;
 import org.hardisonbrewing.maven.core.cli.CommandLineService;
+import org.hardisonbrewing.maven.core.cli.LogStreamConsumer;
 
 public abstract class JoJoMojo extends AbstractMojo {
 
@@ -59,13 +61,25 @@ public abstract class JoJoMojo extends AbstractMojo {
         return execute( buildCommandline( cmd ) );
     }
 
+    protected final int execute( List<String> cmd, StreamConsumer systemOut, StreamConsumer systemErr ) {
+
+        return execute( buildCommandline( cmd ), systemOut, systemErr );
+    }
+
     protected final int execute( Commandline commandLine ) {
+
+        StreamConsumer systemOut = new LogStreamConsumer( LogStreamConsumer.LEVEL_INFO );
+        StreamConsumer systemErr = new LogStreamConsumer( LogStreamConsumer.LEVEL_ERROR );
+        return execute( commandLine, systemOut, systemErr );
+    }
+
+    protected final int execute( Commandline commandLine, StreamConsumer systemOut, StreamConsumer systemErr ) {
 
         int exitValue;
 
         try {
             getLog().info( commandLine.toString() );
-            exitValue = CommandLineService.execute( commandLine );
+            exitValue = CommandLineService.execute( commandLine, systemOut, systemErr );
         }
         catch (CommandLineException e) {
             throw new IllegalStateException( e.getCause() );

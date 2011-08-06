@@ -79,9 +79,9 @@ public class CommandLineService {
      * @return
      * @throws CommandLineException
      */
-    public static final int execute( List<String> cmd ) throws CommandLineException {
+    public static final int execute( List<String> cmd, StreamConsumer systemOut, StreamConsumer systemErr ) throws CommandLineException {
 
-        return execute( build( cmd ) );
+        return execute( build( cmd ), systemOut, systemErr );
     }
 
     /**
@@ -90,10 +90,8 @@ public class CommandLineService {
      * @return
      * @throws CommandLineException
      */
-    public static final int execute( Commandline commandLine ) throws CommandLineException {
+    public static final int execute( Commandline commandLine, StreamConsumer systemOut, StreamConsumer systemErr ) throws CommandLineException {
 
-        StreamConsumer systemOut = new LogStreamConsumer( LogStreamConsumer.LEVEL_INFO );
-        StreamConsumer systemErr = new LogStreamConsumer( LogStreamConsumer.LEVEL_ERROR );
         return CommandLineUtils.executeCommandLine( commandLine, systemOut, systemErr );
     }
 }
