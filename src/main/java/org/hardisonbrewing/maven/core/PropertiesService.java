@@ -25,9 +25,16 @@ import java.util.Properties;
 
 public class PropertiesService {
 
+    private static final Properties customProperties = new Properties();
+
     protected PropertiesService() {
 
         // do nothing
+    }
+
+    public static final void putProperty( String key, String value ) {
+
+        customProperties.put( key, value );
     }
 
     public static final void storeProperties( Properties properties, String filePath ) {
@@ -65,7 +72,10 @@ public class PropertiesService {
 
         Properties properties = new Properties();
 
-        // do these first so execution properties can overwrit
+        // do these first so pom properties can overwrite
+        properties.putAll( customProperties );
+
+        // do these first so execution properties can overwrite
         properties.putAll( ProjectService.getProject().getProperties() );
 
         // these properties come from command line
@@ -79,7 +89,11 @@ public class PropertiesService {
         if ( value != null ) {
             return value;
         }
-        return ProjectService.getProject().getProperties().getProperty( key );
+        value = ProjectService.getProject().getProperties().getProperty( key );
+        if ( value != null ) {
+            return value;
+        }
+        return customProperties.getProperty( key );
     }
 
     public static final File getPropertyAsFile( String key ) {
@@ -101,5 +115,31 @@ public class PropertiesService {
             return false;
         }
         return "true".equalsIgnoreCase( property );
+    }
+
+    public static String populateTemplateVariables( String value, String delimStart, String delimEnd ) {
+
+        Properties properties = PropertiesService.getProperties();
+
+        int start = 0;
+        while (( start = value.indexOf( delimStart, start ) ) != -1) {
+
+            start += delimStart.length();
+
+            int end = value.indexOf( delimEnd, start );
+            String template = value.substring( start, end );
+
+            if ( properties.containsKey( template ) ) {
+
+                String property = properties.getProperty( template );
+                value = value.replace( delimStart + template + delimEnd, property );
+
+                end = start + property.length();
+            }
+
+            start = end;
+        }
+
+        return value;
     }
 }
