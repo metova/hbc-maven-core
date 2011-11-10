@@ -314,10 +314,46 @@ public class FileUtils extends org.codehaus.plexus.util.FileUtils {
 
     public static String[] listFilePathsRecursive( File file, String[] includes, String[] excludes ) {
 
-        List<String> _excludes = new ArrayList<String>();
-        for (String ignoreFile : IGNORE_FILES) {
-            _excludes.add( "**/" + ignoreFile );
+        DirectoryScanner scanner = buildScanner( file, includes, excludes );
+        scanner.scan();
+
+        String[] filePaths = scanner.getIncludedFiles();
+        for (int i = 0; i < filePaths.length; i++) {
+            StringBuffer stringBuffer = new StringBuffer();
+            stringBuffer.append( file );
+            stringBuffer.append( File.separator );
+            stringBuffer.append( filePaths[i] );
+            filePaths[i] = stringBuffer.toString();
         }
+
+        return filePaths;
+    }
+
+    public static String[] listDirectoryPathsRecursive( File file, String[] includes, String[] excludes ) {
+
+        DirectoryScanner scanner = buildScanner( file, includes, excludes );
+        scanner.scan();
+
+        String[] filePaths = scanner.getIncludedDirectories();
+        for (int i = 0; i < filePaths.length; i++) {
+            StringBuffer stringBuffer = new StringBuffer();
+            stringBuffer.append( file );
+            stringBuffer.append( File.separator );
+            stringBuffer.append( filePaths[i] );
+            filePaths[i] = stringBuffer.toString();
+        }
+
+        return filePaths;
+    }
+
+    public static DirectoryScanner buildScanner( File file, String[] includes, String[] excludes ) {
+
+        List<String> _excludes = new ArrayList<String>();
+
+        for (String ignoreFile : IGNORE_FILES) {
+            _excludes.add( "**" + File.separator + ignoreFile );
+        }
+
         if ( excludes != null ) {
             for (String exclude : excludes) {
                 _excludes.add( exclude );
@@ -333,18 +369,7 @@ public class FileUtils extends org.codehaus.plexus.util.FileUtils {
         scanner.setBasedir( file );
         scanner.setCaseSensitive( false );
         scanner.setFollowSymlinks( true );
-        scanner.scan();
-
-        String[] filePaths = scanner.getIncludedFiles();
-        for (int i = 0; i < filePaths.length; i++) {
-            StringBuffer stringBuffer = new StringBuffer();
-            stringBuffer.append( file );
-            stringBuffer.append( File.separator );
-            stringBuffer.append( filePaths[i] );
-            filePaths[i] = stringBuffer.toString();
-        }
-
-        return filePaths;
+        return scanner;
     }
 
     public static final String[] listFilePathsRecursive( File file ) {
