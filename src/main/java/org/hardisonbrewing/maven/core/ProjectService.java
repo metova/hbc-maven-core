@@ -22,6 +22,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,9 +37,27 @@ import org.apache.maven.project.ProjectBuildingException;
 
 public class ProjectService {
 
+    private static String[] additionalSourceDirectories;
+
     protected ProjectService() {
 
         // do nothing
+    }
+
+    public static void addSourceDirectory( String filePath ) {
+
+        String[] _additionalSourceDirectories;
+
+        if ( additionalSourceDirectories == null ) {
+            _additionalSourceDirectories = new String[1];
+        }
+        else {
+            int length = additionalSourceDirectories.length;
+            _additionalSourceDirectories = Arrays.copyOf( additionalSourceDirectories, length + 1 );
+        }
+
+        _additionalSourceDirectories[_additionalSourceDirectories.length - 1] = filePath;
+        additionalSourceDirectories = _additionalSourceDirectories;
     }
 
     /**
@@ -162,14 +182,25 @@ public class ProjectService {
         return version;
     }
 
-    public static final File getSourceDirectory() {
+    public static final File[] getSourceDirectories() {
 
-        return new File( getSourceDirectoryPath() );
+        String[] filePaths = getSourceDirectoryPaths();
+        File[] files = new File[filePaths.length];
+        for (int i = 0; i < filePaths.length; i++) {
+            files[i] = new File( filePaths[i] );
+        }
+        return files;
     }
 
-    public static final String getSourceDirectoryPath() {
+    public static final String[] getSourceDirectoryPaths() {
 
-        return getProject().getBuild().getSourceDirectory();
+        int additionalCount = additionalSourceDirectories == null ? 0 : additionalSourceDirectories.length;
+        String[] filePaths = new String[additionalCount + 1];
+        filePaths[0] = getProject().getBuild().getSourceDirectory();
+        if ( additionalSourceDirectories != null ) {
+            System.arraycopy( additionalSourceDirectories, 0, filePaths, 1, additionalCount );
+        }
+        return filePaths;
     }
 
     public static String[] getSourceFilePaths() {
@@ -179,7 +210,18 @@ public class ProjectService {
 
     public static String[] getSourceFilePaths( String[] includes, String[] excludes ) {
 
-        return FileUtils.listFilePathsRecursive( getSourceDirectory(), includes, excludes );
+        ArrayList<String> filePaths = new ArrayList<String>();
+        for (File sourceDirectory : getSourceDirectories()) {
+            for (String filePath : FileUtils.listFilePathsRecursive( sourceDirectory, includes, excludes )) {
+                if ( !filePaths.contains( filePath ) ) {
+                    filePaths.add( filePath );
+                }
+            }
+        }
+
+        String[] _filePaths = new String[filePaths.size()];
+        filePaths.toArray( _filePaths );
+        return _filePaths;
     }
 
     public static final String[] getResourceFilePaths() {
