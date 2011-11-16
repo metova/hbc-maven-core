@@ -44,6 +44,11 @@ public class ProjectService {
         // do nothing
     }
 
+    public static void setSourceDirectory( String filePath ) {
+
+        getProject().getBuild().setSourceDirectory( filePath );
+    }
+
     public static void addSourceDirectory( String filePath ) {
 
         String[] _additionalSourceDirectories;
@@ -194,13 +199,21 @@ public class ProjectService {
 
     public static final String[] getSourceDirectoryPaths() {
 
-        int additionalCount = additionalSourceDirectories == null ? 0 : additionalSourceDirectories.length;
-        String[] filePaths = new String[additionalCount + 1];
-        filePaths[0] = getProject().getBuild().getSourceDirectory();
+        List<String> filePaths = new ArrayList<String>();
+
+        filePaths.add( getProject().getBuild().getSourceDirectory() );
+
         if ( additionalSourceDirectories != null ) {
-            System.arraycopy( additionalSourceDirectories, 0, filePaths, 1, additionalCount );
+            for (String additionalSourceDirectory : additionalSourceDirectories) {
+                if ( !filePaths.contains( additionalSourceDirectory ) ) {
+                    filePaths.add( additionalSourceDirectory );
+                }
+            }
         }
-        return filePaths;
+
+        String[] _filePaths = new String[filePaths.size()];
+        filePaths.toArray( _filePaths );
+        return _filePaths;
     }
 
     public static String[] getSourceFilePaths() {
