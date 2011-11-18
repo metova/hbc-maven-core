@@ -83,6 +83,12 @@ public class PropertiesService {
         return properties;
     }
 
+    public static final boolean hasProperty( String key ) {
+
+        String property = getProperty( key );
+        return property != null;
+    }
+
     public static final String getProperty( String key ) {
 
         String value = JoJoMojo.getMojo().getMavenSession().getExecutionProperties().getProperty( key );
