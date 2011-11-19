@@ -20,6 +20,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.cli.CommandLine;
 import org.codehaus.plexus.util.cli.CommandLineException;
 import org.codehaus.plexus.util.cli.CommandLineUtils;
 import org.codehaus.plexus.util.cli.Commandline;

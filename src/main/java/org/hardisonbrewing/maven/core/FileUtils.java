@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.hardisonbrewing.maven.core;
 
 import java.io.File;
@@ -47,6 +46,16 @@ public class FileUtils extends org.codehaus.plexus.util.FileUtils {
     protected FileUtils() {
 
         // do nothing
+    }
+
+    public static final void ensureParentExists( String filePath ) {
+
+        File file = new File( filePath );
+        file = file.getParentFile();
+
+        if ( file != null && !file.exists() ) {
+            file.mkdirs();
+        }
     }
 
     public static final void copyFile( File source, File destination ) throws IOException {
@@ -129,7 +138,11 @@ public class FileUtils extends org.codehaus.plexus.util.FileUtils {
         String baseDirPath = ProjectService.getBaseDirPath();
 
         if ( filePath.startsWith( baseDirPath ) ) {
-            return filePath.substring( baseDirPath.length() );
+            filePath = filePath.substring( baseDirPath.length() );
+        }
+
+        if ( filePath.startsWith( File.separator ) ) {
+            filePath = filePath.substring( 1 );
         }
 
         return filePath;
