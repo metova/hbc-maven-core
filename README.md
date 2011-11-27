@@ -1,5 +1,5 @@
 Build or Download
------------------
+=====
 To build this you need to use Maven.
 
 OR add the following remote repository to download the latest snapshot:
