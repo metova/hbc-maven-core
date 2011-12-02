@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,10 +32,11 @@ import org.apache.maven.model.Resource;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
+import org.hardisonbrewing.maven.core.model.ProjectConfiguration;
 
 public class ProjectService {
 
-    private static String[] additionalSourceDirectories;
+    private static ProjectConfiguration projectConfiguration;
 
     protected ProjectService() {
 
@@ -50,18 +50,12 @@ public class ProjectService {
 
     public static void addSourceDirectory( String filePath ) {
 
-        String[] _additionalSourceDirectories;
-
-        if ( additionalSourceDirectories == null ) {
-            _additionalSourceDirectories = new String[1];
-        }
-        else {
-            int length = additionalSourceDirectories.length;
-            _additionalSourceDirectories = Arrays.copyOf( additionalSourceDirectories, length + 1 );
+        if ( projectConfiguration == null ) {
+            JoJoMojo.getMojo().getLog().error( "ProjectConfiguration is null" );
+            throw new IllegalStateException();
         }
 
-        _additionalSourceDirectories[_additionalSourceDirectories.length - 1] = filePath;
-        additionalSourceDirectories = _additionalSourceDirectories;
+        projectConfiguration.addSourceDirectory( filePath );
     }
 
     /**
@@ -168,7 +162,7 @@ public class ProjectService {
         FileWriter fileWriter = new FileWriter( dest );
 
         try {
-            getProject().writeOriginalModel( fileWriter );
+            getProject().writeModel( fileWriter );
         }
         finally {
             fileWriter.close();
@@ -202,10 +196,14 @@ public class ProjectService {
 
         filePaths.add( getProject().getBuild().getSourceDirectory() );
 
-        if ( additionalSourceDirectories != null ) {
-            for (String additionalSourceDirectory : additionalSourceDirectories) {
-                if ( !filePaths.contains( additionalSourceDirectory ) ) {
-                    filePaths.add( additionalSourceDirectory );
+        ProjectConfiguration projectConfiguration = getProjectConfiguration();
+        if ( projectConfiguration != null ) {
+            String[] additionalSourceDirectories = projectConfiguration.getAdditionalSourceDirectories();
+            if ( additionalSourceDirectories != null ) {
+                for (String additionalSourceDirectory : additionalSourceDirectories) {
+                    if ( !filePaths.contains( additionalSourceDirectory ) ) {
+                        filePaths.add( additionalSourceDirectory );
+                    }
                 }
             }
         }
@@ -247,5 +245,15 @@ public class ProjectService {
             }
         }
         return resourceFilePaths.toArray( new String[resourceFilePaths.size()] );
+    }
+
+    public static ProjectConfiguration getProjectConfiguration() {
+
+        return projectConfiguration;
+    }
+
+    public static void setProjectConfiguration( ProjectConfiguration projectConfiguration ) {
+
+        ProjectService.projectConfiguration = projectConfiguration;
     }
 }
