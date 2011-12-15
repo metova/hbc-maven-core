@@ -26,6 +26,7 @@ import java.io.OutputStream;
 import java.util.Hashtable;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -69,14 +70,24 @@ public class JAXB {
 
     public static <T> T unmarshal( InputStream inputStream, Class<T> clazz ) throws JAXBException {
 
+        Object object;
+
         try {
+
             Unmarshaller unmarshaller = getUnmarshaller( clazz );
-            return (T) unmarshaller.unmarshal( inputStream );
+            object = unmarshaller.unmarshal( inputStream );
         }
         catch (JAXBException e) {
             JoJoMojo.getMojo().getLog().error( "", e );
             throw e;
         }
+
+        if ( object instanceof JAXBElement ) {
+            JAXBElement<T> jaxbElement = (JAXBElement<T>) object;
+            return jaxbElement.getValue();
+        }
+
+        return (T) object;
     }
 
     public static String marshal( Object object ) throws JAXBException {

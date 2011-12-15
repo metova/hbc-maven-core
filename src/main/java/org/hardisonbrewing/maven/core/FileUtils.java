@@ -58,6 +58,13 @@ public class FileUtils extends org.codehaus.plexus.util.FileUtils {
         }
     }
 
+    public static final void copyFile( String srcPath, String destPath ) throws IOException {
+
+        File srcFile = new File( srcPath );
+        File destFile = new File( destPath );
+        copyFile( srcFile, destFile );
+    }
+
     public static final void copyFile( File source, File destination ) throws IOException {
 
         if ( !source.exists() ) {
@@ -70,6 +77,12 @@ public class FileUtils extends org.codehaus.plexus.util.FileUtils {
         destination.setLastModified( destination.lastModified() );
     }
 
+    public static final void copyFileToDirectory( String source, String destinationDirectory ) throws IOException {
+
+        JoJoMojo.getMojo().getLog().info( "Copying " + source + " to " + destinationDirectory );
+        org.codehaus.plexus.util.FileUtils.copyFileToDirectory( source, destinationDirectory );
+    }
+
     public static final void copyFileToDirectory( File source, File destinationDirectory ) throws IOException {
 
         if ( !source.exists() ) {
@@ -77,13 +90,20 @@ public class FileUtils extends org.codehaus.plexus.util.FileUtils {
         }
 
         JoJoMojo.getMojo().getLog().info( "Copying " + source + " to " + destinationDirectory );
-        org.codehaus.plexus.util.FileUtils.copyFileToDirectory( source, destinationDirectory );
 
         StringBuffer destFilePath = new StringBuffer();
         destFilePath.append( destinationDirectory );
         destFilePath.append( File.separator );
         destFilePath.append( source.getName() );
         File destFile = new File( destFilePath.toString() );
+
+        if ( !source.isDirectory() ) {
+            org.codehaus.plexus.util.FileUtils.copyFileToDirectory( source, destinationDirectory );
+        }
+        else {
+            destFile.mkdir();
+            org.codehaus.plexus.util.FileUtils.copyDirectoryStructure( source, destFile );
+        }
 
         destFile.setLastModified( source.lastModified() );
     }
@@ -97,6 +117,14 @@ public class FileUtils extends org.codehaus.plexus.util.FileUtils {
     public static final String getExtension( File file ) throws NoSuchArchiverException {
 
         return getExtension( file.getName() );
+    }
+
+    public static final boolean isCanonical( String filePath ) {
+
+        if ( filePath == null || filePath.length() == 0 ) {
+            return false;
+        }
+        return filePath.charAt( 0 ) != File.separatorChar;
     }
 
     /**
@@ -116,7 +144,7 @@ public class FileUtils extends org.codehaus.plexus.util.FileUtils {
 
         StringBuffer filePath = new StringBuffer();
 
-        if ( !fileName.startsWith( File.separator ) ) {
+        if ( isCanonical( fileName ) ) {
             filePath.append( ProjectService.getBaseDir() );
         }
 
