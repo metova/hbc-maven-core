@@ -58,7 +58,7 @@ public class JAXB {
         InputStream inputStream = null;
         try {
             inputStream = new FileInputStream( file );
-            return JAXB.unmarshal( inputStream, clazz );
+            return unmarshal( inputStream, clazz );
         }
         catch (Exception e) {
             throw new JAXBException( e );
@@ -102,7 +102,7 @@ public class JAXB {
         OutputStream outputStream = null;
         try {
             outputStream = new FileOutputStream( file );
-            JAXB.marshal( outputStream, object );
+            marshal( outputStream, object );
         }
         catch (Exception e) {
             throw new JAXBException( e );

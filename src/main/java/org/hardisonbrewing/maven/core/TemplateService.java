@@ -30,6 +30,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
+import org.apache.velocity.runtime.resource.loader.ResourceLoader;
 import org.codehaus.plexus.util.IOUtil;
 
 public class TemplateService {
@@ -39,12 +40,17 @@ public class TemplateService {
         // do nothing
     }
 
-    public static final Template getTemplate( String resource ) {
+    public static final Template getTemplateFromClasspath( String resource ) {
+
+        return getTemplate( resource, ClasspathResourceLoader.class );
+    }
+
+    public static final Template getTemplate( String name, Class<? extends ResourceLoader> resourceLoader ) {
 
         VelocityEngine velocityEngine = new VelocityEngine();
-        velocityEngine.setProperty( "file.resource.loader.class", ClasspathResourceLoader.class.getName() );
+        velocityEngine.setProperty( "file.resource.loader.class", resourceLoader.getName() );
         velocityEngine.init();
-        return velocityEngine.getTemplate( resource );
+        return velocityEngine.getTemplate( name );
     }
 
     public static final VelocityContext getContext( Properties properties ) {
