@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011 Martin M Reed
+ * Copyright (c) 2011-2012 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,30 +16,39 @@
  */
 package org.hardisonbrewing.maven.core.model;
 
-import java.util.Arrays;
+public class Source {
 
-public class ProjectConfiguration {
+    public String directory;
+    public String[] includes;
+    public String[] excludes;
 
-    private Source[] additionalSources;
+    public String[] getIncludes() {
 
-    public void addSourceDirectory( Source source ) {
-
-        Source[] _additionalSources;
-
-        if ( additionalSources == null ) {
-            _additionalSources = new Source[1];
-        }
-        else {
-            int length = additionalSources.length;
-            _additionalSources = Arrays.copyOf( additionalSources, length + 1 );
-        }
-
-        _additionalSources[_additionalSources.length - 1] = source;
-        additionalSources = _additionalSources;
+        return includes;
     }
 
-    public Source[] getAdditionalSourceDirectories() {
+    public void setIncludes( String[] includes ) {
 
-        return additionalSources;
+        this.includes = includes;
+    }
+
+    public String[] getExcludes() {
+
+        return excludes;
+    }
+
+    public void setExcludes( String[] excludes ) {
+
+        this.excludes = excludes;
+    }
+
+    public String getDirectory() {
+
+        return directory;
+    }
+
+    public void setDirectory( String directory ) {
+
+        this.directory = directory;
     }
 }

@@ -33,6 +33,7 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
 import org.hardisonbrewing.maven.core.model.ProjectConfiguration;
+import org.hardisonbrewing.maven.core.model.Source;
 
 public class ProjectService {
 
@@ -48,14 +49,14 @@ public class ProjectService {
         getProject().getBuild().setSourceDirectory( filePath );
     }
 
-    public static void addSourceDirectory( String filePath ) {
+    public static void addSourceDirectory( Source source ) {
 
         if ( projectConfiguration == null ) {
             JoJoMojo.getMojo().getLog().error( "ProjectConfiguration is null" );
             throw new IllegalStateException();
         }
 
-        projectConfiguration.addSourceDirectory( filePath );
+        projectConfiguration.addSourceDirectory( source );
     }
 
     /**
@@ -180,52 +181,75 @@ public class ProjectService {
         return version;
     }
 
-    public static final File[] getSourceDirectories() {
+    public static final Source[] getSourceDirectoryPaths() {
 
-        String[] filePaths = getSourceDirectoryPaths();
-        File[] files = new File[filePaths.length];
-        for (int i = 0; i < filePaths.length; i++) {
-            files[i] = new File( filePaths[i] );
-        }
-        return files;
-    }
+        List<Source> sources = new ArrayList<Source>();
 
-    public static final String[] getSourceDirectoryPaths() {
-
-        List<String> filePaths = new ArrayList<String>();
-
-        filePaths.add( getProject().getBuild().getSourceDirectory() );
+        String defaultSourceDirectory = getProject().getBuild().getSourceDirectory();
+        Source defaultSource = null;
 
         ProjectConfiguration projectConfiguration = getProjectConfiguration();
         if ( projectConfiguration != null ) {
-            String[] additionalSourceDirectories = projectConfiguration.getAdditionalSourceDirectories();
-            if ( additionalSourceDirectories != null ) {
-                for (String additionalSourceDirectory : additionalSourceDirectories) {
-                    if ( !filePaths.contains( additionalSourceDirectory ) ) {
-                        filePaths.add( additionalSourceDirectory );
+
+            Source[] additionalSources = projectConfiguration.getAdditionalSourceDirectories();
+            if ( additionalSources != null ) {
+
+                for (Source additionalSource : additionalSources) {
+
+                    if ( defaultSourceDirectory.equals( additionalSource.directory ) ) {
+                        defaultSource = additionalSource;
                     }
+                    else if ( additionalSource.directory == null ) {
+                        defaultSource = additionalSource;
+                        defaultSource.directory = defaultSourceDirectory;
+                    }
+
+                    sources.add( additionalSource );
                 }
             }
         }
 
-        String[] _filePaths = new String[filePaths.size()];
-        filePaths.toArray( _filePaths );
+        if ( defaultSource == null ) {
+            defaultSource = new Source();
+            defaultSource.directory = defaultSourceDirectory;
+            sources.add( defaultSource );
+        }
+
+        Source[] _filePaths = new Source[sources.size()];
+        sources.toArray( _filePaths );
         return _filePaths;
     }
 
-    public static String[] getSourceFilePaths() {
+    public static final String[] getSourceFilePaths() {
 
-        return getSourceFilePaths( null, null );
+        List<String> sourceFilePaths = new ArrayList<String>();
+
+        for (Source source : getSourceDirectoryPaths()) {
+
+            String directory = source.directory;
+            String[] includes = source.includes;
+            String[] excludes = source.excludes;
+
+            String[] _sourceFilePaths = org.hardisonbrewing.maven.core.ProjectService.getSourceFilePaths( directory, includes, excludes );
+            for (String sourceFilePath : _sourceFilePaths) {
+                sourceFilePaths.add( sourceFilePath );
+            }
+        }
+
+        String[] _sourceFilePaths = new String[sourceFilePaths.size()];
+        sourceFilePaths.toArray( _sourceFilePaths );
+        return _sourceFilePaths;
     }
 
-    public static String[] getSourceFilePaths( String[] includes, String[] excludes ) {
+    public static String[] getSourceFilePaths( String directory, String[] includes, String[] excludes ) {
 
         ArrayList<String> filePaths = new ArrayList<String>();
-        for (File sourceDirectory : getSourceDirectories()) {
-            for (String filePath : FileUtils.listFilePathsRecursive( sourceDirectory, includes, excludes )) {
-                if ( !filePaths.contains( filePath ) ) {
-                    filePaths.add( filePath );
-                }
+
+        File dirFle = new File( directory );
+
+        for (String filePath : FileUtils.listFilePathsRecursive( dirFle, includes, excludes )) {
+            if ( !filePaths.contains( filePath ) ) {
+                filePaths.add( filePath );
             }
         }
 
