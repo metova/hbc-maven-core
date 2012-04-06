@@ -38,7 +38,7 @@ public class LogStreamConsumer implements StreamConsumer {
     }
 
     @Override
-    public final void consumeLine( String line ) {
+    public void consumeLine( String line ) {
 
         Log log = JoJoMojo.getMojo().getLog();
 
