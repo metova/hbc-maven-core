@@ -323,7 +323,16 @@ public class FileUtils extends org.codehaus.plexus.util.FileUtils {
         return filePath.replace( '\\', File.separatorChar );
     }
 
-    private static File[] convertFilesPaths( String[] filePaths ) {
+    public static String[] convertToPaths( File[] files ) {
+
+        String[] filePaths = new String[files.length];
+        for (int i = 0; i < files.length; i++) {
+            filePaths[i] = files[i].getPath();
+        }
+        return filePaths;
+    }
+
+    public static File[] convertToFiles( String[] filePaths ) {
 
         File[] files = new File[filePaths.length];
         for (int i = 0; i < filePaths.length; i++) {
@@ -334,12 +343,12 @@ public class FileUtils extends org.codehaus.plexus.util.FileUtils {
 
     public static File[] listFilesRecursive( File file, String[] includes, String[] excludes ) {
 
-        return convertFilesPaths( listFilePathsRecursive( file, includes, excludes ) );
+        return convertToFiles( listFilePathsRecursive( file, includes, excludes ) );
     }
 
     public static final File[] listFilesRecursive( File file ) {
 
-        return convertFilesPaths( listFilePathsRecursive( file ) );
+        return convertToFiles( listFilePathsRecursive( file ) );
     }
 
     public static String[] listFilePathsRecursive( File file, Collection<String> includes, Collection<String> excludes ) {
@@ -370,21 +379,45 @@ public class FileUtils extends org.codehaus.plexus.util.FileUtils {
         return filePaths;
     }
 
+    public static File[] listDirectoriesRecursive( File file ) {
+
+        return convertToFiles( listDirectoryPathsRecursive( file, null, null ) );
+    }
+
+    public static File[] listDirectoriesRecursive( File file, String[] includes, String[] excludes ) {
+
+        return convertToFiles( listDirectoryPathsRecursive( file, includes, excludes ) );
+    }
+
+    public static String[] listDirectoryPathsRecursive( File file ) {
+
+        return listDirectoryPathsRecursive( file, null, null );
+    }
+
     public static String[] listDirectoryPathsRecursive( File file, String[] includes, String[] excludes ) {
 
         DirectoryScanner scanner = buildScanner( file, includes, excludes );
         scanner.scan();
 
-        String[] filePaths = scanner.getIncludedDirectories();
-        for (int i = 0; i < filePaths.length; i++) {
+        List<String> filePaths = new ArrayList<String>();
+
+        for (String filePath : scanner.getIncludedDirectories()) {
+
+            // may be empty string if returning self
+            if ( filePath.length() == 0 ) {
+                continue;
+            }
+
             StringBuffer stringBuffer = new StringBuffer();
             stringBuffer.append( file );
             stringBuffer.append( File.separator );
-            stringBuffer.append( filePaths[i] );
-            filePaths[i] = stringBuffer.toString();
+            stringBuffer.append( filePath );
+            filePaths.add( stringBuffer.toString() );
         }
 
-        return filePaths;
+        String[] _filePaths = new String[filePaths.size()];
+        filePaths.toArray( _filePaths );
+        return _filePaths;
     }
 
     public static DirectoryScanner buildScanner( File file, String[] includes, String[] excludes ) {
@@ -393,6 +426,7 @@ public class FileUtils extends org.codehaus.plexus.util.FileUtils {
 
         for (String ignoreFile : IGNORE_FILES) {
             _excludes.add( "**" + File.separator + ignoreFile );
+            _excludes.add( "**" + File.separator + ignoreFile + File.separator + "**" );
         }
 
         if ( excludes != null ) {
