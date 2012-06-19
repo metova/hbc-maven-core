@@ -21,34 +21,4 @@ public class Source {
     public String directory;
     public String[] includes;
     public String[] excludes;
-
-    public String[] getIncludes() {
-
-        return includes;
-    }
-
-    public void setIncludes( String[] includes ) {
-
-        this.includes = includes;
-    }
-
-    public String[] getExcludes() {
-
-        return excludes;
-    }
-
-    public void setExcludes( String[] excludes ) {
-
-        this.excludes = excludes;
-    }
-
-    public String getDirectory() {
-
-        return directory;
-    }
-
-    public void setDirectory( String directory ) {
-
-        this.directory = directory;
-    }
 }

@@ -353,11 +353,17 @@ public class FileUtils extends org.codehaus.plexus.util.FileUtils {
 
     public static String[] listFilePathsRecursive( File file, Collection<String> includes, Collection<String> excludes ) {
 
-        String[] _includes = new String[includes.size()];
-        includes.toArray( _includes );
+        String[] _includes = null;
+        if ( includes != null && !includes.isEmpty() ) {
+            _includes = new String[includes.size()];
+            includes.toArray( _includes );
+        }
 
-        String[] _excludes = new String[excludes.size()];
-        excludes.toArray( _excludes );
+        String[] _excludes = null;
+        if ( excludes != null && !excludes.isEmpty() ) {
+            _excludes = new String[excludes.size()];
+            excludes.toArray( _excludes );
+        }
 
         return listFilePathsRecursive( file, _includes, _excludes );
     }
@@ -422,6 +428,10 @@ public class FileUtils extends org.codehaus.plexus.util.FileUtils {
 
     public static DirectoryScanner buildScanner( File file, String[] includes, String[] excludes ) {
 
+        if ( includes != null && includes.length == 0 ) {
+            includes = null;
+        }
+
         List<String> _excludes = new ArrayList<String>();
 
         for (String ignoreFile : IGNORE_FILES) {
@@ -429,7 +439,7 @@ public class FileUtils extends org.codehaus.plexus.util.FileUtils {
             _excludes.add( "**" + File.separator + ignoreFile + File.separator + "**" );
         }
 
-        if ( excludes != null ) {
+        if ( excludes != null && excludes.length > 0 ) {
             for (String exclude : excludes) {
                 _excludes.add( exclude );
             }
