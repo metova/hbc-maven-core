@@ -36,7 +36,6 @@ public class HBCShell
 {
     private static final char[] BASH_QUOTING_TRIGGER_CHARS = {
         ' ',
-        '$',
         ';',
         '&',
         '<',
