@@ -26,6 +26,7 @@ import org.codehaus.plexus.util.cli.CommandLineUtils;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.codehaus.plexus.util.cli.StreamConsumer;
 import org.hardisonbrewing.maven.core.ProjectService;
+import org.hardisonbrewing.maven.core.cli.shell.HBCShell;
 
 /**
  * Utility methods for handling {@link CommandLine} execution.
@@ -65,6 +66,7 @@ public class CommandLineService {
         Commandline commandLine = new Commandline();
         commandLine.setWorkingDirectory( ProjectService.getBaseDir() );
         commandLine.setExecutable( cmd.get( 0 ) );
+        commandLine.setShell( new HBCShell() );
 
         for (int i = 1; i < cmd.size(); i++) {
             commandLine.createArg().setValue( cmd.get( i ) );
