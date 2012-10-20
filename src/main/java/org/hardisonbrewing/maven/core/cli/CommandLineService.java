@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2011 Martin M Reed
+ * Copyright (c) 2010-2012 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -37,6 +37,18 @@ public class CommandLineService {
         // do nothing
     }
 
+    public static final String getEnvVar( Commandline commandLine, String key ) {
+
+        try {
+            Properties systemEnvVars = commandLine.getSystemEnvVars();
+            String value = systemEnvVars.getProperty( key );
+            return value == null || value.length() == 0 ? null : value;
+        }
+        catch (Exception e) {
+            throw new IllegalStateException( e.getMessage() );
+        }
+    }
+
     public static final void appendEnvVar( Commandline commandLine, String key, String value ) {
 
         try {
@@ -63,6 +75,7 @@ public class CommandLineService {
         }
 
         Commandline commandLine = new Commandline();
+        commandLine.setShell( new org.hardisonbrewing.maven.core.cli.BourneShell() );
         commandLine.setWorkingDirectory( ProjectService.getBaseDir() );
         commandLine.setExecutable( cmd.get( 0 ) );
 
