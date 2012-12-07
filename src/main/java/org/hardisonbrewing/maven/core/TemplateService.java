@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2011 Martin M Reed
+ * Copyright (c) 2010-2012 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -29,11 +30,11 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
-import org.apache.velocity.runtime.resource.loader.ResourceLoader;
 import org.codehaus.plexus.util.IOUtil;
 
 public class TemplateService {
+
+	private static final String VELOCITY_PROPERTIES = "/velocity.properties";
 
     protected TemplateService() {
 
@@ -42,15 +43,22 @@ public class TemplateService {
 
     public static final Template getTemplateFromClasspath( String resource ) {
 
-        return getTemplate( resource, ClasspathResourceLoader.class );
-    }
+        Properties properties = new Properties();
+        InputStream inputStream = null;
 
-    public static final Template getTemplate( String name, Class<? extends ResourceLoader> resourceLoader ) {
+        try {
+            inputStream = TemplateService.class.getResourceAsStream(VELOCITY_PROPERTIES);
+            properties.load(inputStream);
+        }
+        catch (IOException e) {
+            IOUtil.close(inputStream);
+            JoJoMojo.getMojo().getLog().error("Unable to load VelocityEngine properties file: " + VELOCITY_PROPERTIES);
+            throw new IllegalStateException(e);
+        }
 
         VelocityEngine velocityEngine = new VelocityEngine();
-        velocityEngine.setProperty( "file.resource.loader.class", resourceLoader.getName() );
-        velocityEngine.init();
-        return velocityEngine.getTemplate( name );
+        velocityEngine.init(properties);
+        return velocityEngine.getTemplate( resource );
     }
 
     public static final VelocityContext getContext( Properties properties ) {
