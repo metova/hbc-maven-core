@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.hardisonbrewing</groupId>
 	<artifactId>hbc-maven-core</artifactId>
-	<version>1.0.9.metova</version>
+	<version>1.0.10.metova-SNAPSHOT</version>
 	<name>${project.artifactId}</name>
 	<build>
 		<plugins>
